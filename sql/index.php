@@ -1,6 +1,6 @@
 <?php
 // Include the database connection file
-include 'db.php';
+include '../db.php';
 
 // SQL query to create the users table with 'role' column
 $sql = "CREATE TABLE IF NOT EXISTS users (

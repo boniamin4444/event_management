@@ -1,12 +1,16 @@
 <?php
-include 'db.php'; // Include database connection
+include 'db.php'; // Include your database connection
+header("Access-Control-Allow-Origin: *");  // Allow all domains
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");  // Allow specific methods
+header("Access-Control-Allow-Headers: Content-Type, Authorization");  // Allow specific headers
 
-// Check if the request is a POST request
+// Check if form data is posted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize and validate input data
     $full_name = trim($_POST['registerName']);
     $email = trim($_POST['registerEmail']);
     $password = $_POST['registerPassword'];
+    $confirmPassword = $_POST['confirmPassword']; // Add confirm password check
 
     // Server-side validation
     $errors = [];
@@ -26,7 +30,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Password must be at least 8 characters long.";
     }
 
-    // If there are any errors, return them as a response
+    // Confirm password check
+    if ($password !== $confirmPassword) {
+        $errors[] = "Passwords do not match.";
+    }
+
+    // If there are errors, return the error message as a response
     if (!empty($errors)) {
         echo implode("<br>", $errors);
         exit;
@@ -44,6 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt->execute()) {
             echo "Registration successful!";
+            header("location:index.php");
         } else {
             echo "Error: " . $stmt->error;
         }

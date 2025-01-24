@@ -1,5 +1,8 @@
 <?php
 session_start();
+header("Access-Control-Allow-Origin: *");  // Allow all domains
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");  // Allow specific methods
+header("Access-Control-Allow-Headers: Content-Type, Authorization");  // Allow specific headers
 
 // Simulate login status (Replace this logic with your authentication system)
 $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged in
@@ -17,6 +20,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
         .navbar-custom {
             background: linear-gradient(90deg, #1d3557, #457b9d); /* Gradient */
             color: #fff;
+            padding: 0;
         }
         .navbar-custom .navbar-brand {
             color: #f1faee;
@@ -41,21 +45,37 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
             border: none;
         }
         .dropdown-menu .dropdown-item {
-            color: #f1faee;
+            color: rgb(4, 4, 4);
         }
         .dropdown-menu .dropdown-item:hover {
             background-color: #457b9d;
             color: #fff;
         }
+
+        /* For mobile responsiveness */
+        .navbar-custom .navbar-toggler {
+            border-color: #fff;
+        }
+        @media (max-width: 768px) {
+            .navbar-custom .navbar-collapse {
+                display: none;
+            }
+            .navbar-custom .navbar-toggler {
+                display: block;
+            }
+            .navbar-custom.navbar-responsive .navbar-collapse {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-custom">
+        <nav class="navbar navbar-expand-lg navbar-custom" id="navbar">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">MyWebsite</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon" style="color: white;"></span>
+                <button class="navbar-toggler" type="button" onclick="toggleNavbar()" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Left-aligned links -->
@@ -82,7 +102,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     <li><a class="dropdown-item" href="#">Dashboard</a></li>
                                     <li><a class="dropdown-item" href="#">Profile</a></li>
-                                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                                 </ul>
                             </li>
                         <?php else: ?>
@@ -97,127 +117,80 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
         </nav>
     </header>
 
-   <!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm" method="POST">
-                    <div class="mb-3">
-                        <label for="loginEmail" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="loginEmail" name="loginEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="loginPassword" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="loginPassword" name="loginPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
-                <p class="mt-3">Don't have an account? <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal">Register here</a></p>
-                <div id="errorMessage" class="text-danger mt-3"></div>
-                <div id="successMessage" class="text-success mt-3"></div>
+    <!-- Add your login and register modals here (same as in your original code) -->
+ <!-- Login Modal -->
+ <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm" method="POST" action="login.php">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="loginEmail" name="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" name="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p class="mt-3">Don't have an account? <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal">Register here</a></p>
+                    <div id="errorMessage" class="text-danger mt-3"></div>
+                    <div id="successMessage" class="text-success mt-3"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <!-- Register Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registerModalLabel">Register</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="registerForm">
-                    <div class="mb-3">
-                        <label for="registerName" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="registerName" name="registerName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="registerEmail" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="registerEmail" name="registerEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="registerPassword" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="registerPassword" name="registerPassword" required minlength="8">
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-success">Register</button>
-                </form>
-                <div id="errorMessage" class="text-danger mt-2"></div>
-                <div id="successMessage" class="text-success mt-2"></div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm" method="POST" action="register.php">
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="registerName" name="registerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="registerEmail" name="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" name="registerPassword" required minlength="8">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Register</button>
+                    </form>
+                    <div id="errorMessage" class="text-danger mt-2"></div>
+                    <div id="successMessage" class="text-success mt-2"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-
-
-
-
-<script>
-$(document).ready(function() {
-    // Handle form submission with AJAX
-    $("#registerForm").on("submit", function(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        var fullName = $("#registerName").val();
-        var email = $("#registerEmail").val();
-        var password = $("#registerPassword").val();
-        var confirmPassword = $("#confirmPassword").val();
-
-        // Client-side validation
-        if (password !== confirmPassword) {
-            $("#errorMessage").text("Passwords do not match.");
-            return false;
-        }
-
-        if (fullName === "" || email === "" || password === "" || confirmPassword === "") {
-            $("#errorMessage").text("All fields are required.");
-            return false;
-        }
-
-        if (password.length < 8) {
-            $("#errorMessage").text("Password must be at least 8 characters.");
-            return false;
-        }
-
-        // Clear any previous messages
-        $("#errorMessage").text('');
-        $("#successMessage").text('');
-
-        // AJAX request to submit form data to the PHP script
-        $.ajax({
-            url: "register.php", // The PHP file that will process the registration
-            method: "POST",
-            data: {
-                registerName: fullName,
-                registerEmail: email,
-                registerPassword: password
-            },
-            success: function(response) {
-                // Show the success message
-                $("#successMessage").text(response);
-            },
-            error: function() {
-                $("#errorMessage").text("An error occurred. Please try again.");
-            }
-        });
-    });
-});
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap JS and Popper.js -->
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        // Function to toggle the navbar on mobile view
+        function toggleNavbar() {
+            var navbar = document.getElementById("navbar");
+            navbar.classList.toggle("navbar-responsive");
+        }
+    </script>
 </body>
 </html>
