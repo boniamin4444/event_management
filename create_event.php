@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt = $conn->prepare($sql)) {
         // Handle file uploads
-        $uploadDirectory = "uploads/"; // Directory where images will be stored
+        $uploadDirectory = "uploads/"; // Directory where image will be stored
         $imagePaths = [];
 
         // Loop through the uploaded files
