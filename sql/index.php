@@ -12,6 +12,20 @@ $sql = "CREATE TABLE IF NOT EXISTS users (
     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 
+// Events table with images as serialized array
+$sql = "CREATE TABLE IF NOT EXISTS events (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    event_name VARCHAR(255) NOT NULL,
+    event_description TEXT NOT NULL,
+    event_date DATE NOT NULL,
+    event_location VARCHAR(255) NOT NULL,
+    event_capacity INT NOT NULL,
+    event_images TEXT,  -- To store serialized array of images
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)";
+
+
 // Execute the query
 if ($conn->query($sql) === TRUE) {
     echo "Table 'users' created successfully.";

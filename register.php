@@ -52,8 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sss", $full_name, $email, $hashed_password);
 
         if ($stmt->execute()) {
-            echo "Registration successful!";
-            header("location:index.php");
+            echo "<script type='text/javascript'>
+            alert('Registration successful! Please Login to continue.');
+            window.location = 'index.php'; // Redirect to the homepage or login page
+          </script>";
+           exit;
         } else {
             echo "Error: " . $stmt->error;
         }

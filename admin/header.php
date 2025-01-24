@@ -1,8 +1,3 @@
-<?php
-// Start PHP session if needed (for advanced purposes like session-based toggles)
-session_start();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,21 +6,32 @@ session_start();
     <title>Toggle Sidebar with Bootstrap</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Hamburger icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        /* Custom styles for sidebar and submenus */
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
         .sidebar {
             position: fixed;
-            top: 0;
-            left: -250px;
+            top: 60px;
+            left: 0;
             width: 250px;
-            height: 100%;
+            height: calc(100vh - 60px);
             background-color: #343a40;
             color: white;
-            transition: left 0.3s;
+            z-index: 1000;
+            padding-top: 10px;
+            overflow-y: auto;
+            display: block;
+            transform: translateX(-100%); /* Hide sidebar initially */
+            transition: transform 0.3s ease-in-out;
         }
 
         .sidebar.active {
-            left: 0;
+            transform: translateX(0); /* Show sidebar when active class is added */
         }
 
         .sidebar .menu-item {
@@ -59,15 +65,81 @@ session_start();
         .submenu-toggle.open::after {
             content: " ▲";
         }
+
+        .content-area {
+            margin-left: 250px;
+            padding-top: 20px;
+            transition: margin-left 0.3s;
+        }
+
+        .toggle-btn {
+            font-size: 30px;
+            cursor: pointer;
+            color: white;
+            margin-left: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 999;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 250px;
+                height: calc(100vh - 60px);
+                background-color: #343a40;
+                color: white;
+                z-index: 1000;
+                padding-top: 10px;
+                overflow-y: auto;
+                display: block;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .toggle-btn {
+                display: block;
+            }
+
+            .content-area {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between p-3 bg-dark text-white">
-        <span class="h4">My Website</span>
-        <button class="btn btn-outline-light" onclick="toggleSidebar()">Toggle Sidebar</button>
-    </div>
+    <!-- Header with Hamburger Icon on Left -->
+    <div class="header">
+    <span class="h4">My Website</span>
+    <span class="toggle-btn" onclick="toggleSidebar()">
+        <i class="fa fa-bars"></i>
+    </span>
+    <a href="../logout.php" class="btn btn-link text-white ms-auto" id="logoutBtn">
+        <i class="fa fa-sign-out"></i> Logout
+    </a>
+</div>
+
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
@@ -97,7 +169,7 @@ session_start();
     </div>
 
     <!-- Content area -->
-    <div class="container mt-4" style="margin-left: 250px;">
+    <div id="content" class="content-area container">
         <h2>Welcome to the Website</h2>
         <p>Click on the "Toggle Sidebar" button to see the sidebar in action!</p>
     </div>
@@ -107,9 +179,10 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Toggle sidebar visibility
+        // Toggle sidebar visibility on mobile and desktop
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
         }
 
         // Toggle submenu visibility

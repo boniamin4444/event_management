@@ -1,3 +1,47 @@
+<?php
+session_start();
+
+// Database connection using MySQLi
+include('../db.php');
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['loginEmail'];
+    $password = $_POST['loginPassword'];
+
+    // Prepare and execute the query to fetch the user by email
+    $stmt = $conn->prepare("SELECT id, email, password, role FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+
+    // Check if the user exists and the password is correct
+    if ($user && password_verify($password, $user['password'])) {
+        // Set the session variables
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['role'] = $user['role'];
+
+        // Redirect based on role
+        if ($user['role'] === 'admin') {
+            header("Location: dashboard.php");
+            exit;
+        } else {
+            header("Location: index.php?error=You are not admin.");
+            exit;
+        }
+    } else {
+        // Invalid login, redirect with an error message
+        header("Location: index.php?error=Invalid credentials.");
+        exit;
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,20 +63,13 @@
                     </div>
                     <div class="card-body">
                         <!-- Display error message if any -->
-                        <?php if ($error_message): ?>
-                            <div class="alert alert-danger" role="alert">
-                                <?php echo $error_message; ?>
-                            </div>
-                        <?php endif; ?>
+                        <?php
+                            if (isset($_GET['error'])) {
+                                echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['error']) . '</div>';
+                            }
+                        ?>
 
-                        <!-- Display success message if any -->
-                        <?php if ($success_message): ?>
-                            <div class="alert alert-success" role="alert">
-                                <?php echo $success_message; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <form id="loginForm" action="login.php" method="POST">
+                        <form id="loginForm" action="" method="POST">
                             <div class="mb-3">
                                 <label for="loginEmail" class="form-label">Email address</label>
                                 <input type="email" class="form-control" id="loginEmail" name="loginEmail" required>
@@ -44,7 +81,6 @@
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
 
-                        <p class="mt-3 text-center">Don't have an account? <a href="register.php">Register here</a></p>
                     </div>
                 </div>
             </div>
