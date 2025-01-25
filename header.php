@@ -106,9 +106,13 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                         <a class="nav-link" href="#">Services</a>
                     </li>
 
+                    <?php if ($_SESSION['loggedin']): ?>
+
                     <li class="nav-item">
                             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#eventCreateModal">Create Event</a>
                     </li>
+
+                    <?php endif;?>
 
                     <!-- Search Bar Centered -->
                     <li class="nav-item d-flex align-items-center justify-content-center">
@@ -222,6 +226,9 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
             </div>
             <div class="modal-body">
                 <form id="eventCreateForm" method="POST" action="create_event.php" enctype="multipart/form-data">
+                    <!-- Hidden user ID input -->
+                    <input type="hidden" name="userId" value="<?php echo $_SESSION['user_id']; ?>">
+
                     <div class="mb-3">
                         <label for="eventName" class="form-label">Event Name</label>
                         <input type="text" class="form-control" id="eventName" name="eventName" required>
@@ -252,6 +259,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
         </div>
     </div>
 </div>
+
 
 
 <!-- Bootstrap JS and dependencies -->

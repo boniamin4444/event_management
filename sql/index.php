@@ -3,7 +3,7 @@
 include '../db.php';
 
 // SQL query to create the users table with 'role' column
-$sql = "CREATE TABLE IF NOT EXISTS users (
+$sql_users = "CREATE TABLE IF NOT EXISTS users (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -12,9 +12,10 @@ $sql = "CREATE TABLE IF NOT EXISTS users (
     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 
-// Events table with images as serialized array
-$sql = "CREATE TABLE IF NOT EXISTS events (
+// SQL query to create the events table with 'user_id' column (without foreign key)
+$sql_events = "CREATE TABLE IF NOT EXISTS events (
     id INT AUTO_INCREMENT PRIMARY KEY, 
+    user_id INT NOT NULL,  -- Add user_id without foreign key constraint
     event_name VARCHAR(255) NOT NULL,
     event_description TEXT NOT NULL,
     event_date DATE NOT NULL,
@@ -26,11 +27,38 @@ $sql = "CREATE TABLE IF NOT EXISTS events (
 )";
 
 
-// Execute the query
-if ($conn->query($sql) === TRUE) {
-    echo "Table 'users' created successfully.";
+
+$sql_attend_events = "CREATE TABLE IF NOT EXISTS attend_event (
+    attendance_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    event_id INT NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    address TEXT NOT NULL,
+    message TEXT,
+    attend_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('confirmed', 'pending') DEFAULT 'pending'
+)";
+
+
+// Execute the query for users table
+if ($conn->query($sql_users) === TRUE) {
+    echo "Table 'users' created successfully.<br>";
 } else {
-    echo "Error creating table: " . $conn->error;
+    echo "Error creating table 'users': " . $conn->error . "<br>";
+}
+
+// Execute the query for events table
+if ($conn->query($sql_events) === TRUE) {
+    echo "Table 'events' created successfully.<br>";
+} else {
+    echo "Error creating table 'events': " . $conn->error . "<br>";
+}
+if ($conn->query($sql_attend_events) === TRUE) {
+    echo "Table 'Attend events table' created successfully.<br>";
+} else {
+    echo "Error creating table 'events': " . $conn->error . "<br>";
 }
 
 // Close the database connection
