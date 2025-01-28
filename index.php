@@ -36,8 +36,6 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,34 +46,45 @@ $conn->close();
     <title>Events</title>
     <style>
         .event-card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
+    display: flex; /* Use flexbox for the layout */
+    flex-wrap: wrap; /* Allow cards to wrap to the next line */
+    justify-content: center; /* Center the cards horizontally */
+    gap: 30px; /* Space between cards */
+}
         .event-card {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two columns: one for images, one for text */
-            gap: 20px;
+            grid-template-columns: 1fr 2fr; /* Two columns: one for images, one for text */
+            gap: 30px;
             border: 1px solid #ddd;
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: hidden;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
+            padding: 20px;
+            margin-bottom: 20px;
         }
         .event-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
         }
         .event-card-img-container {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            max-width: 100%; 
+            position: relative;
+        }
+        .image-count {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 1rem;
         }
         .event-card-img {
             width: 100%;
-            height: 100%;
+            height: 200px;
             object-fit: cover;
+            border-radius: 8px;
         }
         .event-card-details {
             padding: 20px;
@@ -84,7 +93,7 @@ $conn->close();
             justify-content: space-between;
         }
         .event-name {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: #333;
         }
@@ -94,7 +103,7 @@ $conn->close();
             flex-grow: 1;
         }
         .event-date, .event-location, .event-capacity {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #777;
         }
         .event-message {
@@ -110,6 +119,30 @@ $conn->close();
             background-color: #0056b3;
             border-color: #0056b3;
         }
+        .carousel-inner img {
+            object-fit: cover;
+            max-height: 500px; /* Set maximum height for images in the carousel */
+        }
+
+        /* Custom style for carousel buttons */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: skyblue !important; /* Set button background to yellow */
+            border-radius: 50%; /* Make the buttons round */
+            width: 40px; /* Adjust size if needed */
+            height: 40px; /* Adjust size if needed */
+        }
+
+        /* Optional: Change button hover effect to make it even more visible */
+        .carousel-control-prev-icon:hover,
+        .carousel-control-next-icon:hover {
+            background-color: darkorange !important; /* Change to dark orange on hover */
+        }
+
+        .event-name, .event-description, .event-date, .event-location, .event-capacity {
+    font-weight: bold;
+}
+
     </style>
 </head>
 <body>
@@ -132,18 +165,26 @@ $conn->close();
             <div class="event-card">
                 <!-- Event Image -->
                 <div class="event-card-img-container">
-                    <?php foreach ($eventImages as $image): ?>
-                        <img src="<?= $image ?>" alt="Event Image" class="event-card-img">
-                    <?php endforeach; ?>
+                    <?php if (count($eventImages) > 0): ?>
+                        <!-- Show the first image -->
+                         <div>
+                        <img src="<?= $eventImages[0] ?>" alt="Event Image" class="event-card-img" data-bs-toggle="modal" data-bs-target="#imageModal-<?= $event['id'] ?>">
+                        <!-- Show the number of remaining images -->
+                        <?php if (count($eventImages) > 1): ?>
+                            <span class="image-count">+<?= count($eventImages) - 1 ?> more pic</span>
+                        <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Event Details -->
                 <div class="event-card-details">
-                    <h5 class="event-name"><?= htmlspecialchars($event['event_name']) ?></h5>
-                    <p class="event-description"><?= htmlspecialchars($event['event_description']) ?></p>
-                    <p class="event-date">Date: <?= htmlspecialchars($event['event_date']) ?></p>
-                    <p class="event-location">Location: <?= htmlspecialchars($event['event_location']) ?></p>
-                    <p class="event-capacity">Capacity: <?= htmlspecialchars($eventCapacity) ?></p>
+                <h5 class="event-name"><strong>Event Name: <?= htmlspecialchars($event['event_name']) ?></strong></h5>
+                <p class="event-description"><strong>Description: <?= htmlspecialchars($event['event_description']) ?></strong></p>
+               <p class="event-date"><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
+               <p class="event-location"><strong>Location:</strong> <?= htmlspecialchars($event['event_location']) ?></p>
+               <p class="event-capacity"><strong>Capacity:</strong> <?= htmlspecialchars($eventCapacity) ?></p>
+
 
                     <!-- Conditional Button or Message -->
                     <?php if (isset($_SESSION['user_id'])): ?>
@@ -159,6 +200,39 @@ $conn->close();
                     <?php endif; ?>
                 </div>
             </div>
+
+            <!-- Modal for displaying all images -->
+            <div class="modal fade" id="imageModal-<?= $event['id'] ?>" tabindex="-1" aria-labelledby="imageModalLabel-<?= $event['id'] ?>" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="imageModalLabel-<?= $event['id'] ?>">Event Images</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Carousel for images -->
+                            <div id="carouselExample-<?= $event['id'] ?>" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <?php foreach ($eventImages as $index => $image): ?>
+                                        <div class="carousel-item <?= $index == 0 ? 'active' : '' ?>">
+                                            <img src="<?= $image ?>" class="d-block w-100" alt="Event Image">
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-<?= $event['id'] ?>" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-<?= $event['id'] ?>" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <?php endforeach; ?>
     </div>
 </div>
@@ -173,7 +247,7 @@ $conn->close();
             </div>
             <div class="modal-body">
                 <form id="attendanceForm" method="POST" action="attend_event.php">
-                    <input type="hidden" id="event_id" name="event_id" value=""/>
+                    <input type="hidden" id="event_id" name="event_id" value="<? $event_id ?>"/>
                     <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id']; ?>"/>
 
                     <div class="mb-3">

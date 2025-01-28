@@ -70,19 +70,37 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
             }
         }
 
-        #searchBar {
-            transition: all 0.3s ease;
-        }
+      /* Style the search bar to make it larger */
+#searchInput {
+    width: 300px;  /* Increased width */
+    font-size: 1.2rem;  /* Larger font size */
+    padding: 10px;  /* More padding */
+    border-radius: 50px; /* Rounded corners */
+}
 
-        /* Customize search input */
-        #searchInput {
-            display: none;
-            width: 200px;
-        }
+.input-group {
+    display: flex;
+    justify-content: center;  /* Center the search bar */
+    align-items: center;
+}
 
-        #searchInput.show {
-            display: block;
-        }
+.input-group .btn {
+    border-radius: 50px;  /* Rounded button */
+    background-color: #ffcc00;  /* Yellow background for the button */
+    color: white;
+    border: none;
+}
+
+.input-group .btn:hover {
+    background-color: #ff9900;  /* Darker yellow on hover */
+}
+
+/* Optional: on focus, the search bar expands */
+#searchInput:focus {
+    width: 350px;
+    transition: width 0.3s ease;
+}
+
     </style>
 </head>
 <body>
@@ -107,49 +125,48 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                     </li>
 
                     <?php if ($_SESSION['loggedin']): ?>
-
                     <li class="nav-item">
-                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#eventCreateModal">Create Event</a>
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#eventCreateModal">Create Event</a>
                     </li>
-
-                    <?php endif;?>
-
-                    <!-- Search Bar Centered -->
-                    <li class="nav-item d-flex align-items-center justify-content-center">
-                        <a class="nav-link" href="#" onclick="toggleSearchBar()">
-                            <i class="fa fa-search"></i> 
-                        </a>
-                        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Search...">
-                    </li>
+                    <?php endif; ?>
                 </ul>
+
+                <!-- Centered Search Bar -->
+                <div class="navbar-nav mx-auto">
+                    <li class="nav-item d-flex align-items-center justify-content-center">
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Search...">
+                            <button class="btn btn-outline-secondary" type="button" onclick="searchFunction()">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </li>
+                </div>
 
                 <!-- Right-aligned links -->
                 <ul class="navbar-nav ms-auto">
                     <?php if ($_SESSION['loggedin']): ?>
-                        <!-- Dropdown for logged-in users -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                User
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="#">Dashboard</a></li>
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
-                                <li><a class="dropdown-item" href="logout.php">Logout</a></li>
-                            </ul>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            User
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="user_dashboard.php">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                        </ul>
+                    </li>
                     <?php else: ?>
-                        <!-- Login link for guests -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                    </li>
                     <?php endif; ?>
-
-                    
                 </ul>
             </div>
         </div>
     </nav>
 </header>
+
 
 <!-- Add your login and register modals here (same as in your original code) -->
 <!-- Login Modal -->

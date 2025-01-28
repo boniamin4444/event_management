@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // If the count is greater than 0, the user has already registered for this event
     if ($count > 0) {
         // Show an alert message if the user has already registered
-        echo "<script>alert('You have already registered for this event with either your user ID or email.');</script>";
+        echo "<script>alert('You have already registered for this event with either your user ID or email.');window.location.href='index.php';</script>";
         exit;
     }
 
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     } else {
         // Handle error (optional)
-        echo "<script>alert('Error: " . $stmt->error . "');</script>";
+        echo "<script>alert('Error: " . $stmt->error . "');window.location.href='index.php';</script>";
     }
 
     // Close the statement and connection
