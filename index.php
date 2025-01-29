@@ -33,6 +33,43 @@ if ($result->num_rows > 0) {
     echo "No events found.";
 }
 
+
+
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Prepare the SQL query to search for events
+$sql = "SELECT * FROM events WHERE event_name LIKE ?";
+$stmt = $conn->prepare($sql);
+$searchTerm = "%" . $searchTerm . "%"; // Add wildcards for partial matching
+$stmt->bind_param("s", $searchTerm);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Fetch event data
+$events = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Get the current attendees count for this event
+        $event_id = $row['id'];
+
+        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ?";
+        $att_stmt = $conn->prepare($attendees_sql);
+        $att_stmt->bind_param("i", $event_id);
+        $att_stmt->execute();
+        $att_stmt->bind_result($attendees_count);
+        $att_stmt->fetch();
+
+        $row['attendees_count'] = $attendees_count;
+        $events[] = $row;
+
+        $att_stmt->close();
+    }
+} else {
+    echo "No events found.";
+}
+
+
+
 $conn->close();
 ?>
 
@@ -201,8 +238,8 @@ $conn->close();
                 </div>
             </div>
 
-            <!-- Modal for displaying all images -->
-            <div class="modal fade" id="imageModal-<?= $event['id'] ?>" tabindex="-1" aria-labelledby="imageModalLabel-<?= $event['id'] ?>" aria-hidden="true">
+             <!-- Modal for displaying all images -->
+             <div class="modal fade" id="imageModal-<?= $event['id'] ?>" tabindex="-1" aria-labelledby="imageModalLabel-<?= $event['id'] ?>" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -232,10 +269,10 @@ $conn->close();
                     </div>
                 </div>
             </div>
-
         <?php endforeach; ?>
     </div>
 </div>
+
 
 <!-- Modal for Event Attendance -->
 <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">

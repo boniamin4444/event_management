@@ -38,9 +38,9 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <h5>Quick Links</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-decoration-none">Home</a></li>
-                    <li><a href="#" class="text-decoration-none">Events</a></li>
-                    <li><a href="#" class="text-decoration-none">About</a></li>
+                    <li><a href="index.php" class="text-decoration-none">Home</a></li>
+                    <li><a href="index.php" class="text-decoration-none">Events</a></li>
+                    <li><a href="about.php" class="text-decoration-none">About</a></li>
                     <li><a href="#" class="text-decoration-none">Contact</a></li>
                 </ul>
             </div>
@@ -48,9 +48,9 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <h5>Contact Us</h5>
                 <ul class="list-unstyled">
-                    <li>Email: support@eventmanager.com</li>
-                    <li>Phone: +1 234 567 890</li>
-                    <li>Address: 123 Event St, City</li>
+                    <li>Email: boniamin4444@gmail.com</li>
+                    <li>Phone: 01822860232</li>
+                    <li>Address: Chittagong road, Narayanganj</li>
                 </ul>
             </div>
             <!-- Column 4 -->

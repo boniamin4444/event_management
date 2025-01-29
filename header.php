@@ -107,7 +107,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
 <header>
     <nav class="navbar navbar-expand-lg navbar-custom" id="navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MyWebsite</a>
+            <a class="navbar-brand" href="index.php">MyWebsite</a>
             <button class="navbar-toggler" type="button" onclick="toggleNavbar()" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -115,10 +115,10 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                 <!-- Left-aligned links -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="about.php">About</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Services</a>
@@ -132,24 +132,28 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                 </ul>
 
                 <!-- Centered Search Bar -->
-                <div class="navbar-nav mx-auto">
-                    <li class="nav-item d-flex align-items-center justify-content-center">
-                        <div class="input-group">
-                            <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Search...">
-                            <button class="btn btn-outline-secondary" type="button" onclick="searchFunction()">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </li>
-                </div>
+                <form method="GET" action="index.php">
+    <div class="navbar-nav mx-auto">
+        <li class="nav-item d-flex align-items-center justify-content-center">
+            <div class="input-group">
+                <input type="text" id="searchInput" name="search" class="form-control form-control-lg" placeholder="Search..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </li>
+    </div>
+</form>
+
 
                 <!-- Right-aligned links -->
                 <ul class="navbar-nav ms-auto">
                     <?php if ($_SESSION['loggedin']): ?>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            User
-                        </a>
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span style="font-weight: bold; color: black;">Welcome,</span>
+                    <?= isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest'; ?>
+</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="user_dashboard.php">Dashboard</a></li>
                             <li><a class="dropdown-item" href="#">Profile</a></li>

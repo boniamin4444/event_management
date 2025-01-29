@@ -20,7 +20,7 @@ include 'db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lence Cafe Dashboard</title>
+    <title>User Dashboard</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
     <!-- Font Awesome Icons -->
@@ -191,8 +191,9 @@ include 'db.php';
             <h2>Lence Cafe</h2>
             <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button> <!-- Toggle button -->
             <div class="notification-container">
-                <p>Trans Id</p><br>
-                <a href="all_approve.php"><span id="notificationBadge" class="badge badge-danger"></span></a>
+            <li class="nav-item">
+            <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+            </li>
             </div>
         </div>
     </div>
@@ -201,12 +202,12 @@ include 'db.php';
 <!-- Sidebar -->
 <div class="sidebar">
     <div class="brand">
-        <img src="path_to_your_logo_image.png" alt="Lence Cafe Logo">
-        Lence Cafe
+        <img src="path_to_your_logo_image.png" alt="Event management Logo">
+        Event Management
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadPage('user_dashboard.php');"><i class="fas fa-home mr-2"></i>Home</a>
+            <a class="nav-link" href="index.php" ><i class="fas fa-home mr-2"></i>Go Back / Home</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#videosSubMenu" aria-expanded="false" aria-controls="videosSubMenu">
@@ -218,11 +219,11 @@ include 'db.php';
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#addTeacherSubMenu" aria-expanded="false" aria-controls="addTeacherSubMenu">
-                <i class="fas fa-chalkboard-teacher mr-2"></i>Teachers <i class="fas fa-caret-down"></i>
+                <i class="fas fa-chalkboard-teacher mr-2"></i>Joining list <i class="fas fa-caret-down"></i>
             </a>
             <div class="submenu collapse" id="addTeacherSubMenu">
-                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('#');"><i class="fas fa-eye mr-2"></i>View Teachers</a>
-                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('#');"><i class="fas fa-chalkboard-teacher mr-2"></i>Add Teachers</a>
+                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('manage_event_registrations.php');"><i class="fas fa-eye mr-2"></i>View All Join list</a>
+                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('create_eventFromDashboard.php');"><i class="fas fa-chalkboard-teacher mr-2"></i>Add New Event</a>
             </div>
         </li>
         <li class="nav-item">
@@ -252,14 +253,14 @@ include 'db.php';
 <!-- Main content area with iFrame -->
 <div class="main-content">
     <div class="iframe-container">
-        <iframe class="iframe-content" id="iframeContent" src="Everything_at_a_glance.php" frameborder="0"></iframe>
+        <iframe class="iframe-content" id="iframeContent" src="home.php" frameborder="0"></iframe>
     </div>
 </div>
 
 <!-- Footer -->
 <footer class="footer">
     <div class="container">
-        &copy; 2024 Your Company. All rights reserved.
+        &copy; 2025 Your Company. All rights reserved by Event Management.
     </div>
 </footer>
 
