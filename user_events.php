@@ -1,7 +1,7 @@
 <?php
 session_start();  // Start the session to access session variables
 
-// Include database connection (using mysqli)
+// Include database connection
 include 'db.php';
 
 // Ensure the user is logged in
@@ -12,28 +12,51 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch events for the logged-in user
-$query = "SELECT * FROM events WHERE user_id = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param('i', $user_id); // Binding parameter for user_id
+// Fetch user role from the database
+$queryRole = "SELECT role FROM users WHERE id = ?";
+$stmt = $conn->prepare($queryRole);
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$stmt->bind_result($role);
+$stmt->fetch();
+$stmt->close();
+
+// Fetch events based on user role
+if ($role === 'admin') {
+    // Admin can see all events
+    $query = "SELECT * FROM events";
+    $stmt = $conn->prepare($query);
+} else {
+    // Regular users see only their events
+    $query = "SELECT * FROM events WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $user_id);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 $events = $result->fetch_all(MYSQLI_ASSOC);
 
-// Delete an event
+// Delete an event (admin can delete any, users can delete only their own)
 if (isset($_GET['delete'])) {
     $event_id = $_GET['delete'];
-    $deleteQuery = "DELETE FROM events WHERE id = ? AND user_id = ?";
-    $stmt = $conn->prepare($deleteQuery);
-    $stmt->bind_param('ii', $event_id, $user_id); // Binding parameters for event_id and user_id
+
+    if ($role === 'admin') {
+        $deleteQuery = "DELETE FROM events WHERE id = ?";
+        $stmt = $conn->prepare($deleteQuery);
+        $stmt->bind_param('i', $event_id);
+    } else {
+        $deleteQuery = "DELETE FROM events WHERE id = ? AND user_id = ?";
+        $stmt = $conn->prepare($deleteQuery);
+        $stmt->bind_param('ii', $event_id, $user_id);
+    }
+
     $stmt->execute();
-    header("Location: events.php"); // Redirect after deletion
+    header("Location: user_events.php");
     exit();
 }
 
-
-
-// Edit an event (populate form with existing event data)
+// Edit an event (users can edit only their own events)
 if (isset($_POST['edit'])) {
     $event_id = $_POST['event_id'];
     $event_name = $_POST['event_name'];
@@ -42,12 +65,18 @@ if (isset($_POST['edit'])) {
     $event_location = $_POST['event_location'];
     $event_capacity = $_POST['event_capacity'];
 
-    // Update the event
-    $updateQuery = "UPDATE events SET event_name = ?, event_description = ?, event_date = ?, event_location = ?, event_capacity = ? WHERE id = ? AND user_id = ?";
-    $stmt = $conn->prepare($updateQuery);
-    $stmt->bind_param("ssssiii", $event_name, $event_description, $event_date, $event_location, $event_capacity, $event_id, $user_id);
+    if ($role === 'admin') {
+        $updateQuery = "UPDATE events SET event_name = ?, event_description = ?, event_date = ?, event_location = ?, event_capacity = ? WHERE id = ?";
+        $stmt = $conn->prepare($updateQuery);
+        $stmt->bind_param("ssssii", $event_name, $event_description, $event_date, $event_location, $event_capacity, $event_id);
+    } else {
+        $updateQuery = "UPDATE events SET event_name = ?, event_description = ?, event_date = ?, event_location = ?, event_capacity = ? WHERE id = ? AND user_id = ?";
+        $stmt = $conn->prepare($updateQuery);
+        $stmt->bind_param("ssssiii", $event_name, $event_description, $event_date, $event_location, $event_capacity, $event_id, $user_id);
+    }
+
     $stmt->execute();
-    header("Location: user_events.php"); // Redirect after updating
+    header("Location: user_events.php");
     exit();
 }
 
@@ -64,6 +93,7 @@ function fetchEventImages($event_id) {
     return unserialize($event_images);
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -103,7 +133,7 @@ function fetchEventImages($event_id) {
                             <!-- Edit button -->
                             <button class="btn btn-warning" data-toggle="modal" data-target="#editModal<?= $event['id']; ?>">Edit</button>
                             <!-- Delete button -->
-                            <a href="events.php?delete=<?= $event['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this event?');">Delete</a>
+                            <a href="user_events.php?delete=<?= $event['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this event?');">Delete</a>
                         </td>
                     </tr>
 

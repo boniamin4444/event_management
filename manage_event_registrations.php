@@ -1,24 +1,37 @@
 <?php
 session_start();
-// Include your database connection
-include('db.php');
+include 'db.php';
 
-// Check if the user is logged in and has an ID (adjust the session variable accordingly)
+// Ensure the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    // If no user is logged in, redirect them to login page
     header("Location: login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id']; // Get the logged-in user's ID
+$user_id = $_SESSION['user_id'];
 
-// Fetch only the events created by the logged-in user
-$eventsSql = "SELECT * FROM events WHERE user_id = ?"; // Assuming 'user_id' is the column for the creator
-$eventsStmt = $conn->prepare($eventsSql);
-$eventsStmt->bind_param("i", $user_id);
+// Fetch user role
+$roleQuery = "SELECT role FROM users WHERE id = ?";
+$roleStmt = $conn->prepare($roleQuery);
+$roleStmt->bind_param("i", $user_id);
+$roleStmt->execute();
+$roleStmt->bind_result($role);
+$roleStmt->fetch();
+$roleStmt->close();
+
+// Check role to determine query
+if ($role === 'admin') {
+    $eventsSql = "SELECT * FROM events"; // Admin sees all events
+    $eventsStmt = $conn->prepare($eventsSql);
+} else {
+    $eventsSql = "SELECT * FROM events WHERE user_id = ?";
+    $eventsStmt = $conn->prepare($eventsSql);
+    $eventsStmt->bind_param("i", $user_id);
+}
 $eventsStmt->execute();
 $eventsResult = $eventsStmt->get_result();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

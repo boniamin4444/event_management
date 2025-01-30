@@ -105,8 +105,14 @@ $conn->close();
             transform: translateY(-10px);
         }
         .event-card-img-container {
-            position: relative;
-        }
+    width: 100%; /* Make the container responsive */
+    height: 200px; /* Set a fixed height */
+    overflow: hidden; /* Prevent overflow */
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
         .image-count {
             position: absolute;
             bottom: 10px;
@@ -118,11 +124,11 @@ $conn->close();
             font-size: 1rem;
         }
         .event-card-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
+    width: 100%; /* Ensure it takes the full width */
+    height: 100%; /* Ensure it takes the full height */
+    object-fit: cover; /* Ensures image fills the space without distortion */
+    border-radius: 8px;
+}
         .event-card-details {
             padding: 20px;
             display: flex;
@@ -157,9 +163,12 @@ $conn->close();
             border-color: #0056b3;
         }
         .carousel-inner img {
-            object-fit: cover;
-            max-height: 500px; /* Set maximum height for images in the carousel */
-        }
+    object-fit: contain; /* Ensure the full image is visible */
+    width: 100%;
+    height: auto;
+    max-height: 500px; /* Adjust height if needed */
+}
+
 
         /* Custom style for carousel buttons */
         .carousel-control-prev-icon,
@@ -208,7 +217,7 @@ $conn->close();
                         <img src="<?= $eventImages[0] ?>" alt="Event Image" class="event-card-img" data-bs-toggle="modal" data-bs-target="#imageModal-<?= $event['id'] ?>">
                         <!-- Show the number of remaining images -->
                         <?php if (count($eventImages) > 1): ?>
-                            <span class="image-count">+<?= count($eventImages) - 1 ?> more pic</span>
+                            <span class="image-count">+<?= count($eventImages) - 1 ?>Click on image to see more pic</span>
                         <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -252,7 +261,7 @@ $conn->close();
                                 <div class="carousel-inner">
                                     <?php foreach ($eventImages as $index => $image): ?>
                                         <div class="carousel-item <?= $index == 0 ? 'active' : '' ?>">
-                                            <img src="<?= $image ?>" class="d-block w-100" alt="Event Image">
+                                            <img src="<?= $image ?>" class="d-block w-100 h-300px" alt="Event Image">
                                         </div>
                                     <?php endforeach; ?>
                                 </div>

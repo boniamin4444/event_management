@@ -59,17 +59,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Redirect based on user role
                     if ($role === 'admin') {
                         // Redirect to the admin dashboard
-                        header("Location: admin/dashboard.php");
+                        header("Location: user_dashboard.php");
                     } else {
                         // Redirect to the user homepage or index page
                         header("Location: index.php");
                     }
                     exit;
                 } else {
-                    echo "Incorrect password."; // Debugging statement
+                    echo "<script>
+        alert('Incorrect password.');
+        window.location.href = 'index.php';
+      </script>";
+
                 }
             } else {
-                echo "No user found with that email."; // Debugging statement
+                echo "<scriot>alert('No user found with that email.'<script>"; // Debugging statement
             }
         } else {
             echo "Error executing the query: " . $conn->error;

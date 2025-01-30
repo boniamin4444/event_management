@@ -226,15 +226,7 @@ include 'db.php';
                 <a class="nav-link" href="javascript:void(0);" onclick="loadPage('create_eventFromDashboard.php');"><i class="fas fa-chalkboard-teacher mr-2"></i>Add New Event</a>
             </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#addVideoIDSubMenu" aria-expanded="false" aria-controls="addVideoIDSubMenu">
-                <i class="fas fa-video mr-2"></i>Video ID <i class="fas fa-caret-down"></i>
-            </a>
-            <div class="submenu collapse" id="addVideoIDSubMenu">
-                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('#');"><i class="fas fa-eye mr-2"></i>View All Video Id</a>
-                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('#');"><i class="fas fa-chalkboard-teacher mr-2"></i>Insert Video ID</a>
-            </div>
-        </li>
+       
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#adminUsersSubMenu" aria-expanded="false" aria-controls="adminUsersSubMenu">
                 <i class="fas fa-users-cog mr-2"></i>Admin Users <i class="fas fa-caret-down"></i>
