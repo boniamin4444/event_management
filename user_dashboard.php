@@ -6,6 +6,12 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include 'db.php';
+
+
+$isLoggedIn = isset($_SESSION['user_id']);
+$isAdmin = $isLoggedIn && $_SESSION['role'] === 'admin';
+
+
 ?>
 
 <script>
@@ -228,14 +234,17 @@ include 'db.php';
         </li>
        
         <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#adminUsersSubMenu" aria-expanded="false" aria-controls="adminUsersSubMenu">
-                <i class="fas fa-users-cog mr-2"></i>Admin Users <i class="fas fa-caret-down"></i>
-            </a>
-            <div class="submenu collapse" id="adminUsersSubMenu">
-                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('#');"><i class="fas fa-list mr-2"></i>Show All Admin Users</a>
-                <a class="nav-link" href="javascript:void(0);" onclick="loadPage('#');"><i class="fas fa-user-plus mr-2"></i>Admin Register</a>
-            </div>
-        </li>
+    <?php if ($isAdmin): ?>
+        <a class="nav-link" data-toggle="collapse" href="#adminUsersSubMenu" aria-expanded="false" aria-controls="adminUsersSubMenu">
+            <i class="fas fa-users-cog mr-2"></i>Admin & Users <i class="fas fa-caret-down"></i>
+        </a>
+        <div class="submenu collapse" id="adminUsersSubMenu">
+            <a class="nav-link" href="javascript:void(0);" onclick="loadPage('all_users.php');"><i class="fas fa-list mr-2"></i>Show All Admin & Users</a>
+        </div>
+    <?php endif; ?>
+</li>
+
+
         <li class="nav-item">
             <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
         </li>

@@ -193,6 +193,13 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
+                <p>Admin login</p>
+                <p>Email: boniamin4444@gmail.com</p>
+                <p>Password: 123456789</p>
+                <p>User Login</p>
+                <p>Email: rayhan@gmail.com</p>
+                <p>password: 123456789</p>
+                <br>
                 <p class="mt-3">Don't have an account? <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal">Register here</a></p>
                 <div id="errorMessage" class="text-danger mt-3"></div>
                 <div id="successMessage" class="text-success mt-3"></div>

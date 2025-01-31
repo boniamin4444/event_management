@@ -99,6 +99,7 @@ $conn->close();
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
             padding: 20px;
+            width: 800px;
             margin-bottom: 20px;
         }
         .event-card:hover {
@@ -106,10 +107,11 @@ $conn->close();
         }
         .event-card-img-container {
     width: 100%; /* Make the container responsive */
-    height: 200px; /* Set a fixed height */
+    height: 300px; /* Set a fixed height */
     overflow: hidden; /* Prevent overflow */
-    height: auto;
-    display: flex;
+    
+    position: relative;
+  
     justify-content: center;
     align-items: center;
 }
@@ -217,7 +219,7 @@ $conn->close();
                         <img src="<?= $eventImages[0] ?>" alt="Event Image" class="event-card-img" data-bs-toggle="modal" data-bs-target="#imageModal-<?= $event['id'] ?>">
                         <!-- Show the number of remaining images -->
                         <?php if (count($eventImages) > 1): ?>
-                            <span class="image-count">+<?= count($eventImages) - 1 ?>Click on image to see more pic</span>
+                            <span class="image-count">+<?= count($eventImages) - 1 ?> Click on image to see more pic</span>
                         <?php endif; ?>
                         </div>
                     <?php endif; ?>
