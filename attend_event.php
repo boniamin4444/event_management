@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $status = 'pending';  // Set default status as 'pending'
 
     // Check if the user already registered for this event by user_id and event_id
-    $checkSql = "SELECT COUNT(*) FROM attend_event WHERE (user_id = ? AND event_id = ?) OR email = ?";
+    $checkSql = "SELECT COUNT(*) FROM attend_event WHERE (user_id = ? AND event_id = ?) AND email = ?";
     $checkStmt = $conn->prepare($checkSql);
     $checkStmt->bind_param("iis", $user_id, $event_id, $email);
     $checkStmt->execute();

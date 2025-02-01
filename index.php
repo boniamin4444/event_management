@@ -228,24 +228,39 @@ $conn->close();
                 <!-- Event Details -->
                 <div class="event-card-details">
                 <h5 class="event-name"><strong>Event Name: <?= htmlspecialchars($event['event_name']) ?></strong></h5>
-                <p class="event-description"><strong>Description: <?= htmlspecialchars($event['event_description']) ?></strong></p>
-               <p class="event-date"><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
-               <p class="event-location"><strong>Location:</strong> <?= htmlspecialchars($event['event_location']) ?></p>
-               <p class="event-capacity"><strong>Capacity:</strong> <?= htmlspecialchars($eventCapacity) ?></p>
+
+<?php 
+    // Shorten the description to 100 characters and add '...' if it's too long
+    $shortDescription = strlen($event['event_description']) > 100 ? substr($event['event_description'], 0, 100) . '...' : $event['event_description'];
+
+    // Shorten the location to 50 characters and add '...' if it's too long
+    $shortLocation = strlen($event['event_location']) > 50 ? substr($event['event_location'], 0, 50) . '...' : $event['event_location'];
+?>
+
+<p class="event-description"><strong>Description: </strong><?= htmlspecialchars($shortDescription) ?></p>
+<p class="event-date"><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
+<p class="event-location"><strong>Location:</strong> <?= htmlspecialchars($shortLocation) ?></p>
+<p class="event-capacity"><strong>Capacity:</strong> <?= htmlspecialchars($eventCapacity) ?></p>
 
 
                     <!-- Conditional Button or Message -->
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <?php if ($isFull): ?>
-                            <span class="event-message">Event is fully booked</span>
-                        <?php else: ?>
-                            <!-- Button to trigger modal -->
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#attendanceModal" 
-                                    data-event-id="<?= $event['id'] ?>" data-user-id="<?= $_SESSION['user_id'] ?>">Click to attend</button>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <button class="btn btn-primary" onclick="alert('Please login to join this event!')">Please login to join this event</button>
-                    <?php endif; ?>
+    <?php if ($isFull): ?>
+        <span class="event-message">Event is fully booked</span>
+    <?php else: ?>
+        <!-- Button container with flex to align buttons side by side -->
+        <div class="d-flex gap-2">
+            <!-- Button to trigger modal for attending -->
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#attendanceModal" 
+                    data-event-id="<?= $event['id'] ?>" data-user-id="<?= $_SESSION['user_id'] ?>">Click to attend</button>
+            <!-- Button to view event details -->
+            <a href="event_details.php?id=<?= $event['id'] ?>" class="btn btn-primary btn-sm">View Details</a>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+    <button class="btn btn-primary btn-sm" onclick="alert('Please login to join this event!')">Please login to join this event</button>
+<?php endif; ?>
+
                 </div>
             </div>
 

@@ -107,7 +107,10 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
 <header>
     <nav class="navbar navbar-expand-lg navbar-custom" id="navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">MyWebsite</a>
+        <a class="navbar-brand" href="index.php" style="font-family: 'Times New Roman', serif; font-size: 30px; color: gold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+  Manage Events
+</a>
+
             <button class="navbar-toggler" type="button" onclick="toggleNavbar()" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
