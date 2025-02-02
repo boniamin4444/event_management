@@ -116,6 +116,7 @@ function fetchEventImages($event_id) {
                 <th>Event Date</th>
                 <th>Location</th>
                 <th>Capacity</th>
+                <th>Image</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -124,11 +125,23 @@ function fetchEventImages($event_id) {
                 <?php foreach ($events as $event): ?>
                     <tr>
                         <td><?= $event['id']; ?></td>
-                        <td><?= $event['event_name']; ?></td>
-                        <td><?= $event['event_description']; ?></td>
-                        <td><?= $event['event_date']; ?></td>
-                        <td><?= $event['event_location']; ?></td>
-                        <td><?= $event['event_capacity']; ?></td>
+                <td><?= $event['event_name']; ?></td>
+                <td class="text-truncate" style="max-width: 150px;"><?= $event['event_description']; ?></td>
+                <td><?= $event['event_date']; ?></td>
+                <td class="text-truncate" style="max-width: 150px;"><?= $event['event_location']; ?></td>
+                <td><?= $event['event_capacity']; ?></td>
+                <!-- Display Images -->
+                        <td>
+                            <?php
+                            $existingImages = fetchEventImages($event['id']);
+                            if (!empty($existingImages)) {
+                                // Show the first image (or you can decide to display more)
+                                echo "<img src='{$existingImages[0]}' class='img-thumbnail' width='100' height='100' alt='Event Image'>";
+                            } else {
+                                echo "No images uploaded.";
+                            }
+                            ?>
+                        </td>
                         <td>
                             <!-- Edit button -->
                             <button class="btn btn-warning" data-toggle="modal" data-target="#editModal<?= $event['id']; ?>">Edit</button>

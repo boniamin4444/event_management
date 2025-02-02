@@ -1,11 +1,14 @@
 <?php
 session_start();  // Start the session to access session variables
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Include the database connection
 include 'db.php'; 
 
 // Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['user_id'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize and validate form input
     $userId = $_POST['userId'];
     $eventName = trim($_POST['eventName']);
@@ -28,50 +31,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['user_id'])) {
         $uploadDirectory = "uploads/"; // Directory where image will be stored
         $imagePaths = [];
 
-        // Loop through the uploaded files
-        foreach ($_FILES['eventImages']['tmp_name'] as $key => $tmp_name) {
-            $imageName = $_FILES['eventImages']['name'][$key];
-            $imageTmpName = $_FILES['eventImages']['tmp_name'][$key];
-            $imageSize = $_FILES['eventImages']['size'][$key];
-            $imageError = $_FILES['eventImages']['error'][$key];
+        // Check if any images are uploaded
+        if (isset($_FILES['eventImages']['tmp_name']) && is_array($_FILES['eventImages']['tmp_name'])) {
+            $numFiles = count($_FILES['eventImages']['tmp_name']);
+            
+            // Allowed image extensions
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
 
-            if ($imageError === 0) {
-                // Check if file is an image
-                $imageType = mime_content_type($imageTmpName);
-                if (strpos($imageType, "image") !== false) {
+            // Handle multiple image uploads
+            for ($i = 0; $i < $numFiles; $i++) {
+                $imageTmpName = $_FILES['eventImages']['tmp_name'][$i];
+                $imageName = $_FILES['eventImages']['name'][$i];
+                $imageSize = $_FILES['eventImages']['size'][$i];
+                $imageError = $_FILES['eventImages']['error'][$i];
+
+                if ($imageError === 0) {
+                    // Get the file extension and convert it to lowercase for case-insensitivity
                     $imageExtension = pathinfo($imageName, PATHINFO_EXTENSION);
-                    $newImageName = uniqid('', true) . "." . $imageExtension;
-                    $imagePath = $uploadDirectory . $newImageName;
+                    $imageExtension = strtolower($imageExtension);
 
-                    // Move the uploaded image to the uploads directory
-                    if (move_uploaded_file($imageTmpName, $imagePath)) {
-                        $imagePaths[] = $imagePath;
+                    // Check if the extension is allowed
+                    if (in_array($imageExtension, $allowedExtensions)) {
+                        // Generate a unique name for the image
+                        $newImageName = uniqid('', true) . "." . $imageExtension;
+                        $imagePath = $uploadDirectory . $newImageName;
+
+                        // Move the uploaded image to the uploads directory
+                        if (move_uploaded_file($imageTmpName, $imagePath)) {
+                            $imagePaths[] = $imagePath;  // Add the image path to the array
+                        } else {
+                            echo "Error moving the image.";
+                            exit;
+                        }
                     } else {
-                        echo "Error moving the image.";
+                        echo "Uploaded file is not a valid image type.";
                         exit;
                     }
                 } else {
-                    echo "Uploaded file is not an image.";
+                    echo "Error uploading image file.";
                     exit;
                 }
-            } else {
-                echo "Error uploading image file.";
-                exit;
             }
         }
 
         // Convert image paths array to serialized string
         $imagePathsSerialized = serialize($imagePaths);
-
-        // Debugging output
-        echo "Query: $sql<br>";
-        echo "User ID: $userId<br>";
-        echo "Event Name: $eventName<br>";
-        echo "Event Description: $eventDescription<br>";
-        echo "Event Date: $eventDate<br>";
-        echo "Event Location: $eventLocation<br>";
-        echo "Event Capacity: $eventCapacity<br>";
-        echo "Serialized Images: $imagePathsSerialized<br>";
 
         // Bind the parameters to the SQL query
         $stmt->bind_param("issssss", $userId, $eventName, $eventDescription, $eventDate, $eventLocation, $eventCapacity, $imagePathsSerialized);

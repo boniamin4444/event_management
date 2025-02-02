@@ -16,7 +16,7 @@ if ($result->num_rows > 0) {
         $event_id = $row['id'];
 
         // Get the number of attendees registered for this event
-        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ?";
+        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ? AND status = 'confirmed'";
         $stmt = $conn->prepare($attendees_sql);
         $stmt->bind_param("i", $event_id);
         $stmt->execute();
@@ -52,7 +52,7 @@ if ($result->num_rows > 0) {
         // Get the current attendees count for this event
         $event_id = $row['id'];
 
-        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ?";
+        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ? AND status = 'confirmed'";
         $att_stmt = $conn->prepare($attendees_sql);
         $att_stmt->bind_param("i", $event_id);
         $att_stmt->execute();
@@ -99,6 +99,7 @@ $conn->close();
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
             padding: 20px;
+            width: 800px;
             margin-bottom: 20px;
         }
         .event-card:hover {
@@ -106,10 +107,11 @@ $conn->close();
         }
         .event-card-img-container {
     width: 100%; /* Make the container responsive */
-    height: 200px; /* Set a fixed height */
+    height: 300px; /* Set a fixed height */
     overflow: hidden; /* Prevent overflow */
-    height: auto;
-    display: flex;
+    
+    position: relative;
+  
     justify-content: center;
     align-items: center;
 }
@@ -195,7 +197,7 @@ $conn->close();
 
 <?php include('header.php'); ?>
 
-<div class="container mt-5" style="min-height:800px;">
+<div class="container " style="min-height:800px; margin-top:110px;">
     <!-- Event Card Container -->
     <div class="event-card-container">
         <?php foreach ($events as $event): ?>
@@ -217,7 +219,7 @@ $conn->close();
                         <img src="<?= $eventImages[0] ?>" alt="Event Image" class="event-card-img" data-bs-toggle="modal" data-bs-target="#imageModal-<?= $event['id'] ?>">
                         <!-- Show the number of remaining images -->
                         <?php if (count($eventImages) > 1): ?>
-                            <span class="image-count">+<?= count($eventImages) - 1 ?>Click on image to see more pic</span>
+                            <span class="image-count">+<?= count($eventImages) - 1 ?> Click on image to see more pic</span>
                         <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -226,24 +228,39 @@ $conn->close();
                 <!-- Event Details -->
                 <div class="event-card-details">
                 <h5 class="event-name"><strong>Event Name: <?= htmlspecialchars($event['event_name']) ?></strong></h5>
-                <p class="event-description"><strong>Description: <?= htmlspecialchars($event['event_description']) ?></strong></p>
-               <p class="event-date"><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
-               <p class="event-location"><strong>Location:</strong> <?= htmlspecialchars($event['event_location']) ?></p>
-               <p class="event-capacity"><strong>Capacity:</strong> <?= htmlspecialchars($eventCapacity) ?></p>
+
+<?php 
+    // Shorten the description to 100 characters and add '...' if it's too long
+    $shortDescription = strlen($event['event_description']) > 100 ? substr($event['event_description'], 0, 100) . '...' : $event['event_description'];
+
+    // Shorten the location to 50 characters and add '...' if it's too long
+    $shortLocation = strlen($event['event_location']) > 50 ? substr($event['event_location'], 0, 50) . '...' : $event['event_location'];
+?>
+
+<p class="event-description"><strong>Description: </strong><?= htmlspecialchars($shortDescription) ?></p>
+<p class="event-date"><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
+<p class="event-location"><strong>Location:</strong> <?= htmlspecialchars($shortLocation) ?></p>
+<p class="event-capacity"><strong>Attend Capacity:</strong> <?= htmlspecialchars($eventCapacity) ?> People</p>
 
 
                     <!-- Conditional Button or Message -->
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <?php if ($isFull): ?>
-                            <span class="event-message">Event is fully booked</span>
-                        <?php else: ?>
-                            <!-- Button to trigger modal -->
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#attendanceModal" 
-                                    data-event-id="<?= $event['id'] ?>" data-user-id="<?= $_SESSION['user_id'] ?>">Click to attend</button>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <button class="btn btn-primary" onclick="alert('Please login to join this event!')">Please login to join this event</button>
-                    <?php endif; ?>
+    <?php if ($isFull): ?>
+        <span class="event-message">Event is fully booked</span>
+    <?php else: ?>
+        <!-- Button container with flex to align buttons side by side -->
+        <div class="d-flex gap-2">
+            <!-- Button to trigger modal for attending -->
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#attendanceModal" 
+                    data-event-id="<?= $event['id'] ?>" data-user-id="<?= $_SESSION['user_id'] ?>">Click to attend</button>
+            <!-- Button to view event details -->
+            <a href="event_details.php?id=<?= $event['id'] ?>" class="btn btn-primary btn-sm">View Details</a>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+    <button class="btn btn-primary btn-sm" onclick="alert('Please login to join this event!')">Please login to join this event</button>
+<?php endif; ?>
+
                 </div>
             </div>
 
