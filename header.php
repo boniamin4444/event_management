@@ -105,12 +105,11 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg navbar-custom" id="navbar">
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top" id="navbar">
         <div class="container-fluid">
-        <a class="navbar-brand" href="index.php" style="font-family: 'Times New Roman', serif; font-size: 30px; color: gold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+              <a class="navbar-brand" href="index.php" style="font-family: 'Times New Roman', serif; font-size: 30px; color: gold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
   Manage Events
 </a>
-
             <button class="navbar-toggler" type="button" onclick="toggleNavbar()" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -123,10 +122,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                     <li class="nav-item">
                         <a class="nav-link" href="about.php">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
-                    </li>
-
+                   
                     <?php if ($_SESSION['loggedin']): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#eventCreateModal">Create Event</a>
@@ -197,7 +193,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
                 <p>Admin login</p>
-                <p>Email: boniamin4444@gmail.com</p>
+                <p>Email: boniamin44444@gmail.com</p>
                 <p>Password: 123456789</p>
                 <p>User Login</p>
                 <p>Email: rayhan@gmail.com</p>

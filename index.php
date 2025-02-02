@@ -16,7 +16,7 @@ if ($result->num_rows > 0) {
         $event_id = $row['id'];
 
         // Get the number of attendees registered for this event
-        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ?";
+        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ? AND status = 'confirmed'";
         $stmt = $conn->prepare($attendees_sql);
         $stmt->bind_param("i", $event_id);
         $stmt->execute();
@@ -52,7 +52,7 @@ if ($result->num_rows > 0) {
         // Get the current attendees count for this event
         $event_id = $row['id'];
 
-        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ?";
+        $attendees_sql = "SELECT COUNT(*) FROM attend_event WHERE event_id = ? AND status = 'confirmed'";
         $att_stmt = $conn->prepare($attendees_sql);
         $att_stmt->bind_param("i", $event_id);
         $att_stmt->execute();
@@ -197,7 +197,7 @@ $conn->close();
 
 <?php include('header.php'); ?>
 
-<div class="container mt-5" style="min-height:800px;">
+<div class="container " style="min-height:800px; margin-top:110px;">
     <!-- Event Card Container -->
     <div class="event-card-container">
         <?php foreach ($events as $event): ?>
@@ -240,7 +240,7 @@ $conn->close();
 <p class="event-description"><strong>Description: </strong><?= htmlspecialchars($shortDescription) ?></p>
 <p class="event-date"><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
 <p class="event-location"><strong>Location:</strong> <?= htmlspecialchars($shortLocation) ?></p>
-<p class="event-capacity"><strong>Capacity:</strong> <?= htmlspecialchars($eventCapacity) ?></p>
+<p class="event-capacity"><strong>Attend Capacity:</strong> <?= htmlspecialchars($eventCapacity) ?> People</p>
 
 
                     <!-- Conditional Button or Message -->

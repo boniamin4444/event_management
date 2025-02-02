@@ -1,5 +1,6 @@
 <?php
-
+session_start();
+error_reporting(0);
 include('db.php');
 
 // Get event ID from URL
@@ -45,16 +46,17 @@ $att_stmt->close();
     <title>Event Details</title>
 </head>
 <style>
-    /* Styling for the carousel buttons */
-  
+    /* Set minimum height for the entire page */
+    .container {
+        height: 100%;
+        min-height: 700px; /* Ensure the page has at least 600px height */
+    }
 
     .carousel-control-prev-icon, .carousel-control-next-icon {
         filter: invert(1); /* Inverts icon color to white */
     }
 
     /* Slight highlight effect when hovered */
-    
-    /* Optional: Add a subtle color effect beneath the buttons for better visibility */
     .carousel-control-prev, .carousel-control-next {
         position: relative;
     }
@@ -71,10 +73,11 @@ $att_stmt->close();
     }
 </style>
 
+
 <body>
 <?php include('header.php'); ?>
 
-<div class="container mt-5" min-height="500px">
+<div class="container mt-5">
     <h2 class="text-center"><?= htmlspecialchars($event['event_name']) ?></h2>
 
     <div class="row">
@@ -91,7 +94,7 @@ $att_stmt->close();
             <h4>Capacity:</h4>
             <p><?= htmlspecialchars($event['event_capacity']) ?> people</p>
 
-            <h4>Attendees:</h4>
+            <h4>Attendees Request:</h4>
             <p><?= $attendees_count ?> people</p>
 
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -102,7 +105,7 @@ $att_stmt->close();
             <?php endif; ?>
         </div>
 
-        <div class="col-md-6" >
+        <div class="col-md-6">
             <h4>Images:</h4>
             <?php if (count($eventImages) > 0): ?>
                 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
@@ -140,7 +143,7 @@ $att_stmt->close();
             </div>
             <div class="modal-body">
                 <form id="attendanceForm" method="POST" action="attend_event.php">
-                    <input type="hidden" id="event_id" name="event_id" value="<? $event_id ?>"/>
+                    <input type="hidden" id="event_id" name="event_id" value="<?=  $event_id ?>"/>
                     <input type="hidden" id="user_id" name="user_id" value="<?= $_SESSION['user_id']; ?>"/>
 
                     <div class="mb-3">
