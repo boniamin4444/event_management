@@ -106,7 +106,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
 <body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top" id="navbar">
-        <div class="container-fluid">
+        <div class="container">
               <a class="navbar-brand" href="index.php" style="font-family: 'Times New Roman', serif; font-size: 30px; color: gold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
   Manage Events
 </a>
@@ -161,7 +161,7 @@ $_SESSION['loggedin'] = $_SESSION['loggedin'] ?? false; // Default: Not logged i
                     </li>
                     <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal"  style="color: gold" >Login</a>
                     </li>
                     <?php endif; ?>
                 </ul>
